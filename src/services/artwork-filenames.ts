@@ -11,5 +11,5 @@ export function artRemoteFileNames(gameId: string, type: string): string[] {
   if (!fallbackType) {
     return [primary];
   }
-  return [primary, `${gameId}_${fallbackType}.png`];
+  return [`${gameId}_${fallbackType}.png`, primary];
 }

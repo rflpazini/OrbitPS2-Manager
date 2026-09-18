@@ -6,6 +6,8 @@ import { artRemoteFileNames } from "./artwork-filenames";
 
 const log = createLogger("artwork");
 
+export type ArtDownloader = (url: string, fileName: string) => Promise<Buffer>;
+
 async function downloadBuffer(url: string, fileName: string): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     https
@@ -28,7 +30,8 @@ export async function downloadArtByGameId(
   gameId: string,
   system: "PS1" | "PS2" = "PS2",
   saveAsName?: string,
-  artTypes?: string[]
+  artTypes?: string[],
+  downloader: ArtDownloader = downloadBuffer
 ) {
   const baseUrl = `https://raw.githubusercontent.com/Luden02/psx-ps2-opl-art-database/refs/heads/main/${system}`;
   const types = artTypes ?? ["COV", "ICO", "SCR"];
@@ -51,7 +54,7 @@ export async function downloadArtByGameId(
       log.verbose(`GET ${url}`);
 
       try {
-        const buffer = await downloadBuffer(url, fileName);
+        const buffer = await downloader(url, fileName);
         const savePath = path.join(dirPath, `${localName}_${type}.png`);
         await fs.writeFile(savePath, buffer);
         log.verbose(`Saved ${type} artwork (${formatBytes(buffer.length)}) → ${savePath}`);
