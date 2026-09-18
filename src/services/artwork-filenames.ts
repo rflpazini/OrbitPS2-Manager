@@ -1,4 +1,4 @@
-const INDEXED_FALLBACKS: Record<string, string> = {
+const INDEXED_REMOTE_TYPES: Record<string, string> = {
   SCR: "SCR_00",
   SCR2: "SCR_01",
   SCR3: "SCR_02",
@@ -6,10 +6,10 @@ const INDEXED_FALLBACKS: Record<string, string> = {
 };
 
 export function artRemoteFileNames(gameId: string, type: string): string[] {
-  const primary = `${gameId}_${type}.png`;
-  const fallbackType = INDEXED_FALLBACKS[type];
-  if (!fallbackType) {
-    return [primary];
+  const classic = `${gameId}_${type}.png`;
+  const indexedType = INDEXED_REMOTE_TYPES[type];
+  if (!indexedType) {
+    return [classic];
   }
-  return [`${gameId}_${fallbackType}.png`, primary];
+  return [`${gameId}_${indexedType}.png`, classic];
 }

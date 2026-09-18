@@ -68,11 +68,19 @@ export async function downloadArtByGameId(
         break;
       } catch (err: any) {
         lastError = err;
-        log.verbose(`${type} artwork unavailable for ${gameId}: ${err.message}`);
+        const isLastCandidate = fileName === candidates[candidates.length - 1];
+        if (!isLastCandidate) {
+          log.verbose(
+            `${type} candidate ${fileName} failed for ${gameId}, trying next: ${err.message}`
+          );
+        }
       }
     }
 
     if (!saved) {
+      log.verbose(
+        `${type} artwork unavailable for ${gameId}: ${lastError?.message ?? `Failed to download ${type}`}`
+      );
       results.push({
         name: localName,
         type,
